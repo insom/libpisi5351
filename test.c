@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <pigpio.h>
 #include <inttypes.h>
+#include <unistd.h>
+#include <sys/time.h>
 #include "si5351a.h"
 
 #define I2C_WRITE 0x60
@@ -129,16 +131,36 @@ void si5351aSetFrequency(uint32_t frequency)
 }
 
 int main(int argc, char **argv) {
-    unsigned freq;
-
-    if (argc != 2) {
-        puts("one argument required");
-        return 1;
-    }
-
-    freq = atoi(argv[1]) * 4;
-
     gpioInitialise();
-    si5351aSetFrequency(freq);
+    // CQ VE3NNE
+    char symbols[] = { 3, 1, 4, 0, 6, 5, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 4, 0,
+        2, 6, 0, 0, 0, 3, 3, 0, 6, 0, 3, 6, 3, 3, 5, 6, 4, 3, 1, 4, 0, 6, 5, 2,
+        1, 7, 4, 6, 4, 2, 0, 0, 3, 0, 4, 7, 1, 2, 2, 2, 1, 6, 2, 1, 3, 7, 2, 5,
+        5, 7, 7, 0, 1, 3, 1, 4, 0, 6, 5, 2 };
+
+    // 1225Hz above the dial frequency for 20m FT8
+    const int base = 14074000 + 1225;
+
+    struct timeval tv;
+    struct timezone tz;
+    for(;;) {
+        gettimeofday(&tv, &tz);
+        if((tv.tv_sec % 30) == 0) {
+            // Transmit in even numbered periods.
+            printf("GO!");
+            break;
+        }
+        printf("NO GO!"); // Mostly to know nothing has crashed.
+        usleep(500000);
+    }
+    usleep(500000);
+
+    for(int i = 0; i < 79; i++) {
+        long f = base + ((symbols[i] + 1) * 6.25);
+        si5351aSetFrequency(f);
+        usleep(150000);
+    }
+    si5351aSetFrequency(0);
+
     gpioTerminate();
 }

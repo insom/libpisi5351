@@ -25,7 +25,7 @@
 #define SI_CLK_SRC_PLL_A	0b00000000
 #define SI_CLK_SRC_PLL_B	0b00100000
 
-#define XTAL_FREQ	27000000			// Crystal frequency
+#define XTAL_FREQ	25000000			// Crystal frequency
 
 void si5351aOutputOff(uint8_t clk);
 void si5351aSetFrequency(uint32_t frequency);
