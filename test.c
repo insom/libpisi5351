@@ -4,6 +4,7 @@
 #include <inttypes.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <signal.h>
 #include "si5351a.h"
 
 #define I2C_WRITE 0x60
@@ -130,6 +131,12 @@ void si5351aSetFrequency(uint32_t frequency)
     i2cClose(i2c);
 }
 
+void cleanup(int err) {
+    si5351aOutputOff(SI_CLK0_CONTROL);
+    gpioTerminate();
+    exit(err);
+}
+
 int main(int argc, char **argv) {
     gpioInitialise();
     // CQ VE3NNE
@@ -140,6 +147,7 @@ int main(int argc, char **argv) {
 
     // 1225Hz above the dial frequency for 20m FT8
     const int base = 14074000 + 1225;
+    signal(SIGINT, cleanup);
 
     struct timeval tv;
     struct timezone tz;
@@ -147,10 +155,10 @@ int main(int argc, char **argv) {
         gettimeofday(&tv, &tz);
         if((tv.tv_sec % 30) == 0) {
             // Transmit in even numbered periods.
-            printf("GO!");
+            printf("X");
             break;
         }
-        printf("NO GO!"); // Mostly to know nothing has crashed.
+        printf("."); // Mostly to know nothing has crashed.
         usleep(500000);
     }
     usleep(500000);
@@ -160,7 +168,5 @@ int main(int argc, char **argv) {
         si5351aSetFrequency(f);
         usleep(150000);
     }
-    si5351aSetFrequency(0);
-
-    gpioTerminate();
+    cleanup(0);
 }
