@@ -1,3 +1,12 @@
+## Current README
+
+This is a fork of https://github.com/bitglue/libpisi5351 designed for
+transmitting FT8 (and maybe other FSK modes) directly using an Si5351. It's
+been altered to use the Adafruit board (which has a different crystal than the
+QRP Labs one).
+
+## Original README
+
 This repository contains a trivial program to set the frequency based on the
 demo code at https://www.qrp-labs.com/synth/si5351ademo.html
 
