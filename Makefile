@@ -3,12 +3,12 @@ CFLAGS=-Wall
 CC=gcc
 
 .PHONY: all
-all: test
+all: t
 
-test: test.c
+t: test.c
 	gcc -c test.c
 	gcc -o t test.o -lpigpio
 
 .PHONY: clean
 clean:
-	rm -f test
+	rm -f test t
