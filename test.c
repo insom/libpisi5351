@@ -134,6 +134,7 @@ void si5351aSetFrequency(uint32_t frequency)
 void cleanup(int err) {
     si5351aOutputOff(SI_CLK0_CONTROL);
     gpioTerminate();
+    printf("\nExiting.\n");
     exit(err);
 }
 
@@ -149,16 +150,25 @@ int main(int argc, char **argv) {
     const int base = 14074000 + 1225;
     signal(SIGINT, cleanup);
 
+    if(argc > 1) {
+        si5351aSetFrequency(atoi(argv[1]));
+        printf("Transmitting a test tone of %s.\n", argv[1]);
+        printf("Press <return> to exit.\n");
+        char buf;
+        read(0, &buf, 1);
+        cleanup(0);
+    }
+
     struct timeval tv;
     struct timezone tz;
     for(;;) {
         gettimeofday(&tv, &tz);
         if((tv.tv_sec % 30) == 0) {
             // Transmit in even numbered periods.
-            printf("X");
+            write(1, "X", 1);
             break;
         }
-        printf("."); // Mostly to know nothing has crashed.
+        write(1, ".", 1);
         usleep(500000);
     }
     usleep(500000);
