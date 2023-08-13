@@ -28,6 +28,6 @@
 #define XTAL_FREQ	25000000			// Crystal frequency
 
 void si5351aOutputOff(uint8_t clk);
-void si5351aSetFrequency(uint32_t frequency);
+void si5351aSetFrequency(float frequency);
 
 #endif //SI5351A_H

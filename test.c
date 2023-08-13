@@ -73,7 +73,7 @@ void si5351aOutputOff(uint8_t clk)
 {
     int i2c = i2cOpen(I2C_BUS, I2C_WRITE, 0);
 
-    i2cWriteByteData(i2c, 0x80, clk);
+    i2cWriteByteData(i2c, clk, 0x80);
 
     i2cClose(i2c);
 }
@@ -86,7 +86,7 @@ void si5351aOutputOff(uint8_t clk)
 //
 // This example sets up PLL A and MultiSynth 0 and produces the output on CLK0
 //
-void si5351aSetFrequency(uint32_t frequency)
+void si5351aSetFrequency(float frequency)
 {
     uint32_t pllFreq;
     uint32_t xtalFreq = XTAL_FREQ;
