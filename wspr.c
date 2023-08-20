@@ -99,7 +99,7 @@ void si5351aSetFrequency(float frequency)
 
     int i2c = i2cOpen(I2C_BUS, I2C_WRITE, 0);
 
-    divider = 900000000 / frequency;// Calculate the division ratio. 900,000,000 is the maximum internal 
+    divider = 800000000 / frequency;// Calculate the division ratio. 900,000,000 is the maximum internal
     // PLL frequency: 900MHz
     if (divider % 2) divider--;		// Ensure an even integer division ratio
 
@@ -120,7 +120,7 @@ void si5351aSetFrequency(float frequency)
     // reprented by constants SI_R_DIV1 to SI_R_DIV128 (see si5351a.h header file)
     // If you want to output frequencies below 1MHz, you have to use the 
     // final R division stage
-    setupMultisynth(i2c, SI_SYNTH_MS_0, divider, SI_R_DIV_1);
+    setupMultisynth(i2c, SI_SYNTH_MS_0, divider, SI_R_DIV_8);
     // Reset the PLL. This causes a glitch in the output. For small changes to 
     // the parameters, you don't need to reset the PLL, and there is no glitch
     i2cWriteByteData(i2c, SI_PLL_RESET, 0xA0);	
@@ -144,11 +144,11 @@ int main(int argc, char **argv) {
     char symbols[] = { 3, 1, 2, 0, 0, 0, 2, 0, 1, 2, 2, 0, 3, 3, 3, 0, 2, 2, 3, 2, 2, 3, 2, 3, 3, 3, 3, 0, 2, 2, 2, 2, 0, 2, 3, 0, 2, 1, 2, 3, 0, 0, 0, 2, 0, 0, 1, 0, 3, 1, 2, 2, 3, 1, 2, 3, 2, 2, 2, 1, 3, 0, 1, 2, 2, 0, 2, 3, 1, 2, 3, 2, 1, 2, 3, 0, 3, 2, 2, 3, 2, 2, 1, 2, 1, 1, 2, 0, 0, 3, 3, 0, 1, 2, 1, 2, 0, 0, 1, 0, 0, 0, 2, 2, 1, 2, 2, 1, 2, 2, 1, 3, 1, 0, 3, 1, 2, 0, 1, 1, 0, 1, 0, 2, 2, 1, 3, 3, 2, 0, 2, 0, 0, 3, 2, 3, 2, 0, 1, 3, 2, 0, 2, 0, 0, 2, 0, 1, 3, 2, 1, 2, 1, 3, 2, 0, 0, 3, 3, 2, 0, 2 };
 
     // 1800Hz above the dial frequency for 20m FT8
-    const int base = 14095600 + 1600;
+    const int base = 8 * (14095600 + 1600);
     signal(SIGINT, cleanup);
 
     if(argc > 1) {
-        si5351aSetFrequency(atoi(argv[1]));
+        si5351aSetFrequency(atoi(argv[1]) * 8);
         printf("Transmitting a test tone of %s.\n", argv[1]);
         printf("Press <return> to exit.\n");
         char buf;
@@ -166,13 +166,13 @@ int main(int argc, char **argv) {
             break;
         }
         write(1, ".", 1);
-        usleep(500000);
+        usleep(100000);
     }
 
     for(int i = 0; i < 162; i++) {
-        float f = (base) + ((symbols[i] + 0) * 1.46);
+        float f = (base) + ((symbols[i] + 0) * 14);
         si5351aSetFrequency(f);
-        usleep(682716); // 110.6 / 162
+        usleep(680000); // 110.6 / 162
     }
     cleanup(0);
 }
