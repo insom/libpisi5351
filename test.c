@@ -11,6 +11,10 @@
 #define I2C_READ  0x61
 #define I2C_BUS 1
 
+#include "ft8_lib/ft8/pack.h"
+#include "ft8_lib/ft8/encode.h"
+#include "ft8_lib/ft8/constants.h"
+
 //
 // Set up specified PLL with mult, num and denom
 // mult is 15..90
@@ -138,10 +142,23 @@ void cleanup(int err) {
     exit(err);
 }
 
+void generate_ft8_tones(const char *msg, uint8_t *buffer) {
+    // First, pack the text data into binary message
+    uint8_t packed[FTX_LDPC_K_BYTES];
+    int rc = pack77(msg, packed);
+    if (rc < 0) {
+        printf("Cannot parse message!\n");
+        printf("RC = %d\n", rc);
+        cleanup(-2);
+    }
+
+    ft8_encode(packed, buffer);
+}
+
 int main(int argc, char **argv) {
     gpioInitialise();
     // CQ VE3NNE
-    char symbols[] = { 3, 1, 4, 0, 6, 5, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 4, 0,
+    uint8_t symbols[] = { 3, 1, 4, 0, 6, 5, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 4, 0,
         2, 6, 0, 0, 0, 3, 3, 0, 6, 0, 3, 6, 3, 3, 5, 6, 4, 3, 1, 4, 0, 6, 5, 2,
         1, 7, 4, 6, 4, 2, 0, 0, 3, 0, 4, 7, 1, 2, 2, 2, 1, 6, 2, 1, 3, 7, 2, 5,
         5, 7, 7, 0, 1, 3, 1, 4, 0, 6, 5, 2 };
