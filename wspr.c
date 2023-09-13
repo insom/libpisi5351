@@ -144,7 +144,8 @@ int main(int argc, char **argv) {
     char symbols[] = { 3, 1, 2, 0, 0, 0, 2, 0, 1, 2, 2, 0, 3, 3, 3, 0, 2, 2, 3, 2, 2, 3, 2, 3, 3, 3, 3, 0, 2, 2, 2, 2, 0, 2, 3, 0, 2, 1, 2, 3, 0, 0, 0, 2, 0, 0, 1, 0, 3, 1, 2, 2, 3, 1, 2, 3, 2, 2, 2, 1, 3, 0, 1, 2, 2, 0, 2, 3, 1, 2, 3, 2, 1, 2, 3, 0, 3, 2, 2, 3, 2, 2, 1, 2, 1, 1, 2, 0, 0, 3, 3, 0, 1, 2, 1, 2, 0, 0, 1, 0, 0, 0, 2, 2, 1, 2, 2, 1, 2, 2, 1, 3, 1, 0, 3, 1, 2, 0, 1, 1, 0, 1, 0, 2, 2, 1, 3, 3, 2, 0, 2, 0, 0, 3, 2, 3, 2, 0, 1, 3, 2, 0, 2, 0, 0, 2, 0, 1, 3, 2, 1, 2, 1, 3, 2, 0, 0, 3, 3, 2, 0, 2 };
 
     // 1800Hz above the dial frequency for 20m FT8
-    const int base = 8 * (14095600 + 1600);
+    const int base = 8 * (14095600 + 1700);
+    //const int base = 8 * (7038600 + 1700);
     signal(SIGINT, cleanup);
 
     if(argc > 1) {
@@ -158,6 +159,7 @@ int main(int argc, char **argv) {
 
     struct timeval tv;
     struct timezone tz;
+    for(int x = 0; x < 3; x++) {
     for(;;) {
         gettimeofday(&tv, &tz);
         if((tv.tv_sec % 120) == 1) {
@@ -170,9 +172,11 @@ int main(int argc, char **argv) {
     }
 
     for(int i = 0; i < 162; i++) {
-        float f = (base) + ((symbols[i] + 0) * 14);
+        float f = (base) + ((symbols[i] + 0) * 12); // was 14
         si5351aSetFrequency(f);
         usleep(680000); // 110.6 / 162
+    }
+        si5351aSetFrequency(base - 1000);
     }
     cleanup(0);
 }

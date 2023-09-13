@@ -165,6 +165,7 @@ int main(int argc, char **argv) {
 
     // 1225Hz above the dial frequency for 20m FT8
     const int base = 14074000 + 1225;
+    //const int base = 7074000 + 1225;
     signal(SIGINT, cleanup);
 
     if(argc > 1) {
