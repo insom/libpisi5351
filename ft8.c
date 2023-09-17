@@ -25,30 +25,14 @@ void generate_ft8_tones(const char *msg, uint8_t *buffer) {
 }
 
 int main(int argc, char **argv) {
-    si5351aInitialize();
-    // CQ VE3NNE FN25
-    uint8_t symbols[] = {3, 1, 4, 0, 6, 5, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                         1, 4, 0, 2, 6, 0, 0, 0, 3, 3, 0, 6, 0, 3, 6, 3,
-                         3, 5, 6, 4, 3, 1, 4, 0, 6, 5, 2, 1, 7, 4, 6, 4,
-                         2, 0, 0, 3, 0, 4, 7, 1, 2, 2, 2, 1, 6, 2, 1, 3,
-                         7, 2, 5, 5, 7, 7, 0, 1, 3, 1, 4, 0, 6, 5, 2};
-    // uint8_t symbols[80] = { 0 };
+    uint8_t symbols[80] = {0};
 
-    /* TESTING */
-    uint8_t other_symbols[512] = {0};
-    generate_ft8_tones("CQ VE3NNE FN25", other_symbols);
-    for (int ii = 0; ii < 79; ii++) {
-        putchar('0' + symbols[ii]);
-        putchar('0' + other_symbols[ii]);
-        putchar(':');
-    }
-    putchar('\n');
-    /* TESTING */
+    si5351aInitialize();
+
     generate_ft8_tones("CQ VE3XEU FN25", symbols);
 
     // 1225Hz above the dial frequency for 20m FT8
     const int base = 14074000 + 1225;
-    // const int base = 7074000 + 1225;
 
     if (argc > 1) {
         si5351aSetFrequency(atoi(argv[1]) * 8);

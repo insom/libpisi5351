@@ -20,9 +20,8 @@ int main(int argc, char **argv) {
         0, 1, 0, 2, 2, 1, 3, 3, 2, 0, 2, 0, 0, 3, 2, 3, 2, 0, 1, 3, 2, 0, 2, 0,
         0, 2, 0, 1, 3, 2, 1, 2, 1, 3, 2, 0, 0, 3, 3, 2, 0, 2};
 
-    // 1800Hz above the dial frequency for 20m FT8
-    const int base = 8 * (14095600 + 1700);
-    // const int base = 8 * (7038600 + 1700);
+    // 1700Hz above the dial frequency for 20m FT8
+    const int base = (14095600 + 1700);
 
     if (argc > 1) {
         si5351aSetFrequency(atoi(argv[1]) * 8);
@@ -47,12 +46,15 @@ int main(int argc, char **argv) {
             usleep(100000);
         }
 
+        si5351aRelayOn();
         for (int i = 0; i < 162; i++) {
-            float f = (base) + ((symbols[i] + 0) * 12);  // was 14
+            float f = (base * 8) + ((symbols[i] + 0) * 12);  // was 14
             si5351aSetFrequency(f);
             usleep(680000);  // 110.6 / 162
         }
-        si5351aSetFrequency(base - 1000);
+        si5351aRelayOff();
+        si5351aSetFrequency(base - 1000);  // Move down-band but don't disable
+                                           // output, to keep PLL in sync
     }
     si5351aCleanup(0);
 }
