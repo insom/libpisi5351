@@ -18,4 +18,4 @@ wspr: wspr.c
 .PHONY: clean
 clean:
 	(cd ft8_lib && make clean)
-	rm -f test t w wspr ft8
+	rm -f test t w wspr ft8 *.o
