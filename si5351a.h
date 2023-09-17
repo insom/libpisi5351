@@ -27,7 +27,15 @@
 
 #define XTAL_FREQ 25000000  // Crystal frequency
 
+#define I2C_WRITE 0x60
+#define I2C_READ 0x61
+#define I2C_BUS 1
+
 void si5351aOutputOff(uint8_t clk);
 void si5351aSetFrequency(float frequency);
+void si5351aCleanup(int err);
+void si5351aInitialize(void);
+void si5351aRelayOn(void);
+void si5351aRelayOff(void);
 
 #endif  // SI5351A_H
