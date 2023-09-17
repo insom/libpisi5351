@@ -1,5 +1,8 @@
-.PHONY: all
-all: ft8 wspr
+.PHONY: all fmt
+all: fmt ft8 wspr
+
+fmt: *.c *.h
+	clang-format -i *.c *.h
 
 ft8_lib/libft8.a:
 	(cd ft8_lib && make lib)
