@@ -5,3 +5,6 @@ t
 *.o
 ft8
 test-signal
+wspr
+.vscode
+*.a

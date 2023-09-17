@@ -1,18 +1,18 @@
-LDFLAGS=-lpigpio
-CFLAGS=-Wall
-CC=gcc
-
 .PHONY: all
-all: t w
+all: ft8 wspr
 
-t: test.c
-	gcc -c test.c
-	gcc -o t test.o ft8_lib/libft8.a -lpigpio
+ft8_lib/libft8.a:
+	(cd ft8_lib && make lib)
 
-w: wspr.c
+ft8: ft8.c ft8_lib/libft8.a
+	gcc -c ft8.c
+	gcc -o ft8 ft8.o ft8_lib/libft8.a -lpigpio
+
+wspr: wspr.c
 	gcc -c wspr.c
-	gcc -o w wspr.o -lpigpio
+	gcc -o wspr wspr.o -lpigpio
 
 .PHONY: clean
 clean:
-	rm -f test t w
+	(cd ft8_lib && make clean)
+	rm -f test t w wspr ft8
