@@ -124,7 +124,7 @@ void si5351aSetFrequency(float frequency) {
     setupMultisynth(i2c, SI_SYNTH_MS_0, divider, SI_R_DIV_8);
     // Reset the PLL. This causes a glitch in the output. For small changes to
     // the parameters, you don't need to reset the PLL, and there is no glitch
-    i2cWriteByteData(i2c, SI_PLL_RESET, 0xA0);
+    // i2cWriteByteData(i2c, SI_PLL_RESET, 0xA0);
     // Finally switch on the CLK0 output (0x4F)
     // and set the MultiSynth0 input to be PLL A
     i2cWriteByteData(i2c, SI_CLK0_CONTROL, 0x4F | SI_CLK_SRC_PLL_A);
