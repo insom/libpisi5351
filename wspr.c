@@ -1,11 +1,11 @@
 #include <inttypes.h>
-#include <pigpio.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <unistd.h>
 
+#include "pigpio/pigpio.h"
 #include "si5351a.h"
 
 int main(int argc, char **argv) {

@@ -1,5 +1,4 @@
 #include <inttypes.h>
-#include <pigpio.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +8,7 @@
 #include "ft8_lib/ft8/constants.h"
 #include "ft8_lib/ft8/encode.h"
 #include "ft8_lib/ft8/pack.h"
+#include "pigpio/pigpio.h"
 #include "si5351a.h"
 
 void generate_ft8_tones(const char *msg, uint8_t *buffer) {
